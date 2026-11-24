@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="tienda-pimpz">
+{% if view == 'admin_login' %}
+    <div class="banner-pimpz admin-banner">
+        <img class="logo-pimpz" src="{{ url_for('static', filename='pimpz.jpeg') }}" alt="Logotipo de Pimpz">
+        <div><h1>Administración de Pimpz</h1><p>Acceso exclusivo para administrar productos.</p></div>
+    </div>
+    <div class="admin-login"><div class="admin-login-tarjeta">
+        <h2>Iniciar sesión como administrador</h2>
+        <p class="pequena">Ingresa la matrícula y la contraseña de administrador para administrar los productos.</p>
+        <form method="post">
+            <div class="campo"><label for="admin-matricula">Matrícula</label><input id="admin-matricula" name="matricula" autocomplete="username" required autofocus></div>
+            <div class="campo"><label for="admin-contrasena">Contraseña</label><input type="password" id="admin-contrasena" name="contrasena" autocomplete="current-password" required></div>
+            <button type="submit" class="boton boton-admin">Entrar al panel</button>
+        </form>
+        <p class="pequena centrado admin-login-volver"><a href="{{ url_for('dispatch', path='p9') }}">Volver a la tienda</a></p>
+    </div></div>
+{% elif view == 'admin' %}
+    <div class="banner-pimpz admin-banner">
+        <img class="logo-pimpz" src="{{ url_for('static', filename='pimpz.jpeg') }}" alt="Logotipo de Pimpz">
+        <div><h1>Panel de administración</h1><p>Pimpz · Sesión de administrador ({{ session.get('admin_p9_matricula', '777') }})</p></div>
+    </div>
+    <div class="admin-barra">
+        <span class="admin-insignia">Admin</span>
+        <a class="boton boton-verde" href="{{ url_for('dispatch', path='p9/crear') }}">Agregar producto</a>
+        <a class="boton boton-gris" href="{{ url_for('dispatch', path='p9') }}">Ver tienda</a>
+        <a class="boton boton-chat" href="{{ url_for('dispatch', path='p9/chat') }}">Chat</a>
+        <a class="boton boton-gris" href="{{ url_for('dispatch', path='p8/panel') }}">Métricas</a>
+        <a class="boton boton-rojo" href="{{ url_for('dispatch', path='p9/admin/salir') }}">Cerrar sesión admin</a>
+    </div>
+    <div class="resumen-tienda admin-resumen">
+        <div><strong>{{ summary.productos }}</strong><span>Productos</span></div>
+        <div><strong>{{ summary.piezas }}</strong><span>Piezas en tienda</span></div>
+        <div><strong>${{ '%.2f'|format(summary.inventario) }}</strong><span>Valor del inventario</span></div>
+        <div><strong>{{ summary.pocas }}</strong><span>Con pocas piezas</span></div>
+        <div><strong>{{ summary.agotados }}</strong><span>Agotados</span></div>
+        <div><strong>{{ summary.promociones }}</strong><span>Con promoción</span></div>
+    </div>
+    <form class="filtros-tienda" method="get">
+        <input type="search" name="q" value="{{ search }}" placeholder="Buscar producto, marca o código…">
+        <select name="categoria"><option value="">Todas las categorías</option>{% for option in categories %}<option value="{{ option }}" {% if option == category %}selected{% endif %}>{{ option }}</option>{% endfor %}</select>
+        <button type="submit" class="boton">Filtrar</button><a class="boton boton-gris" href="{{ url_for('dispatch', path='p9/admin') }}">Limpiar</a>
+    </form>
+    {% include "p9_product_table.html" %}
+    <p class="pequena admin-nota">Desde este panel puedes agregar, editar y eliminar productos. La tienda pública sigue disponible para consultar el catálogo.</p>
+{% elif view == 'product_form' %}
+    <div class="contenedor-ancho"><div class="tarjeta">
+        <div class="encabezado">{{ 'Editar producto' if product else 'Agregar producto a la tienda' }}</div>
+        <div class="cuerpo"><form method="post">
+            <div class="campo"><label for="nombre">Nombre del producto</label><input id="nombre" name="nombre" maxlength="120" required value="{{ product.nombre if product else '' }}" placeholder="Gorra Pimpz Logo"></div>
+            <div class="fila">
+                <div class="campo"><label for="marca">Marca</label><input id="marca" name="marca" maxlength="80" required value="{{ product.marca if product else '' }}" placeholder="Pimpz"></div>
+                <div class="campo"><label for="categoria">Categoría</label><input id="categoria" name="categoria" list="categorias-tienda" maxlength="60" required value="{{ product.categoria if product else '' }}" placeholder="Ropa">
+                    <datalist id="categorias-tienda"><option value="Ropa"><option value="Gorras"><option value="Tenis"><option value="Perfumes"><option value="Accesorios"></datalist>
+                </div>
+            </div>
+            <div class="fila">
+                <div class="campo"><label for="precio">Precio (MXN)</label><input type="number" id="precio" name="precio" step="0.01" min="0" max="99999999.99" required value="{{ product.precio if product else '' }}"></div>
+                <div class="campo"><label for="existencia">Existencia</label><input type="number" id="existencia" name="existencia" step="1" min="0" required value="{{ product.existencia if product else '' }}"></div>
+            </div>
+            <div class="campo"><label for="codigo_barras">Código de producto</label><input id="codigo_barras" name="codigo_barras" maxlength="20" required value="{{ product.codigo_barras if product else '' }}" placeholder="PZ000000000001"></div>
+            <div class="campo"><label for="promocion">Promoción (opcional)</label><input id="promocion" name="promocion" maxlength="120" value="{{ product.promocion if product and product.promocion else '' }}" placeholder="3 por $50"></div>
+            <button type="submit" class="boton boton-verde">Guardar</button>
+            <a class="boton boton-gris" href="{{ url_for('dispatch', path='p9') }}">Cancelar</a>
+        </form></div>
+    </div></div>
+{% elif view == 'chat_guest' %}
+    <div class="contenedor-ancho"><div class="tarjeta"><div class="encabezado">Chat de la tienda</div><div class="cuerpo">
+        <p>Para conversar con otros usuarios necesitas iniciar sesión con tu cuenta de la práctica 5.</p>
+        <a class="boton" href="{{ url_for('dispatch', path='p5/login') }}">Iniciar sesión</a>
+        <a class="boton boton-gris" href="{{ url_for('dispatch', path='p5/registro') }}">Crear cuenta</a>
+        <a class="boton boton-gris" href="{{ url_for('dispatch', path='p9') }}">Volver a la tienda</a>
+    </div></div></div>
+{% elif view == 'chat' %}
+    <div class="banner-pimpz chat-banner"><img class="logo-pimpz" src="{{ url_for('static', filename='pimpz.jpeg') }}" alt="Logotipo de Pimpz"><div><h1>Chat de Pimpz</h1><p>Conversación entre usuarios · {{ student.nombre }} {{ student.apellido }}</p></div></div>
+    <div class="acciones-tienda"><a class="boton boton-gris" href="{{ url_for('dispatch', path='p9') }}">Volver a la tienda</a><a class="boton boton-gris" href="{{ url_for('dispatch', path='p5/logout') }}">Cerrar sesión</a></div>
+    <div class="chat-marco" id="chat" data-mensajes="{{ url_for('dispatch', path='p9/chat/mensajes') }}" data-enviar="{{ url_for('dispatch', path='p9/chat/enviar') }}" data-ultimo="{{ latest }}">
+        <div class="chat-mensajes" id="chat-mensajes" aria-live="polite">
+        {% if not messages %}<p class="chat-vacio" id="chat-vacio">Todavía no hay mensajes. ¡Escribe el primero!</p>
+        {% else %}{% for message in messages %}<div class="chat-mensaje{% if message.autor_matricula == student.matricula %} mio{% endif %}" data-id="{{ message.id }}"><div class="chat-cabeza"><strong>{{ message.autor_nombre }}</strong><time>{{ message.hora }}</time></div><p>{{ message.mensaje }}</p></div>{% endfor %}{% endif %}
+        </div>
+        <form class="chat-form" id="chat-form" method="post" action="{{ url_for('dispatch', path='p9/chat/enviar') }}">
+            <input type="hidden" name="token" value="{{ chat_token }}">
+            <label class="visually-hidden" for="chat-texto">Mensaje</label>
+            <textarea id="chat-texto" name="mensaje" maxlength="500" rows="2" placeholder="Escribe un mensaje…" required></textarea>
+            <button type="submit" class="boton boton-verde" id="chat-enviar">Enviar</button>
+        </form>
+        <p class="chat-estado" id="chat-estado"><span class="chat-punto"></span><span id="chat-estado-texto">Se actualiza automáticamente cada 3 segundos.</span></p>
+    </div>
+{% else %}
+    <div class="banner-pimpz"><img class="logo-pimpz" src="{{ url_for('static', filename='pimpz.jpeg') }}" alt="Logotipo de Pimpz"><div><h1>Tienda Pimpz</h1><p>Ropa, gorras, tenis, perfumes y accesorios.</p></div></div>
+    <div class="resumen-tienda"><div><strong>{{ summary.productos }}</strong><span>Productos</span></div><div><strong>{{ summary.piezas }}</strong><span>Piezas en tienda</span></div><div><strong>${{ '%.2f'|format(summary.inventario) }}</strong><span>Valor del inventario</span></div></div>
+    <form class="filtros-tienda" method="get" action="{{ url_for('dispatch', path='p9') }}">
+        <input type="search" name="q" value="{{ search }}" placeholder="Buscar producto, marca o código…">
+        <select name="categoria"><option value="">Todas las categorías</option>{% for option in categories %}<option value="{{ option }}" {% if option == category %}selected{% endif %}>{{ option }}</option>{% endfor %}</select>
+        <button type="submit" class="boton">Filtrar</button><a class="boton boton-gris" href="{{ url_for('dispatch', path='p9') }}">Limpiar</a>
+    </form>
+    <div class="acciones-tienda">
+        <a class="boton boton-verde" href="{{ url_for('dispatch', path='p9/crear') }}">Agregar producto</a>
+        <a class="boton boton-chat" href="{{ url_for('dispatch', path='p9/chat') }}">Chat de la tienda</a>
+        <a class="boton boton-video" href="#video-tienda">Video de la tienda</a>
+        <a class="boton boton-mapa" href="#sucursales">Sucursales</a>
+        <a class="boton boton-admin" href="{{ url_for('dispatch', path='p9/admin') }}">{{ 'Panel admin' if admin else 'Admin' }}</a>
+        <a class="boton boton-gris" href="{{ url_for('dispatch', path='p8/panel') }}">Ver métricas de la tienda</a>
+    </div>
+    {% include "p9_product_table.html" %}
+    <section class="sucursales-tienda" id="sucursales">
+        <div class="sucursales-encabezado"><div><h2>Sucursal principal</h2><p class="pequena">Visítanos en Tultitlán.</p></div></div>
+        <div class="sucursales-grid">
+            <div id="mapa-sucursales" class="mapa-sucursales" data-sucursales="{{ branches|tojson }}" aria-label="Mapa de sucursales de la tienda"></div>
+            <ul class="lista-sucursales">{% for branch in branches %}<li><strong>{{ branch.nombre }}</strong><span>{{ branch.direccion }}</span><small>Horario: {{ branch.horario }}</small></li>{% endfor %}</ul>
+        </div>
+    </section>
+    <section class="video-tienda" id="video-tienda">
+        <div class="video-tienda-encabezado"><div><h2>Video de Pimpz</h2><p class="pequena">Conoce nuestra tienda y estilo.</p></div><a class="boton boton-gris" href="#productos-tienda">Volver a productos</a></div>
+        <div class="video-marco"><video class="video-practica" controls preload="metadata" poster="{{ url_for('static', filename='pimpz.jpeg') }}"><source src="{{ url_for('static', filename='p9/video-pimpz.mp4') }}" type="video/mp4">Tu navegador no soporta la reproducción de video en HTML5.</video></div>
+        <p class="pequena centrado">Video de Pimpz</p>
+    </section>
+{% endif %}
+</div>
+{% endblock %}

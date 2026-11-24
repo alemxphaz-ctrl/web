@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="inicio-hero">
+    <div>
+        <p class="inicio-etiqueta">PORTAFOLIO · UPVM</p>
+        <h1>Explora mis prácticas</h1>
+        <p>Un espacio para conocer y probar cada proyecto web, desde formularios hasta la tienda Pimpz.</p>
+    </div>
+    <a class="boton boton-azul" href="{{ url_for('dispatch', path='p9') }}">Conocer Pimpz</a>
+</section>
+<section class="practicas-grid" aria-label="Prácticas disponibles">
+    {% for title, text, path in cards %}
+    <article class="practica-card">
+        <span class="practica-numero">{{ title.replace('Práctica ', '') }}</span>
+        <div class="practica-contenido">
+            <h2>{{ title }}</h2>
+            <p>{{ text }}</p>
+            <a class="boton boton-azul" href="{{ url_for('dispatch', path=path) }}">Abrir práctica <span aria-hidden="true">→</span></a>
+        </div>
+    </article>
+    {% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,24 @@
+<div id="productos-tienda">
+{% if products %}
+<div class="tabla-scroll"><table class="tabla{% if view == 'admin' %} admin-tabla{% endif %}">
+    <thead><tr>{% if view == 'admin' %}<th>ID</th>{% endif %}<th>Código</th><th>Producto</th><th>Marca</th><th>Categoría</th><th>Precio</th><th>Existencia</th><th>Promoción</th><th>Acciones</th></tr></thead>
+    <tbody>{% for product in products %}{% set stock_class = 'agotado' if product.existencia == 0 else ('pocas' if product.existencia < 10 else 'disponible') %}{% set stock_text = 'Agotado' if product.existencia == 0 else ('Pocas piezas' if product.existencia < 10 else 'Disponible') %}
+    <tr>
+        {% if view == 'admin' %}<td>{{ product.id }}</td>{% endif %}
+        <td><code>{{ product.codigo_barras }}</code></td><td>{{ product.nombre }}</td><td>{{ product.marca }}</td><td>{{ product.categoria }}</td>
+        <td class="precio-tienda">${{ '%.2f'|format(product.precio) }}</td>
+        <td>{{ product.existencia }} <span class="etiqueta-stock {{ stock_class }}">{{ stock_text }}</span></td>
+        <td>{% if product.promocion %}<span class="etiqueta-promo">{{ product.promocion }}</span>{% else %}<span class="texto-tenue">—</span>{% endif %}</td>
+        <td class="acciones"><a class="boton boton-chico" href="{{ url_for('dispatch', path='p9/editar/' ~ product.id) }}">Editar</a>
+            <form class="formulario-en-linea" method="post" action="{{ url_for('dispatch', path='p9/eliminar/' ~ product.id) }}"><button type="submit" class="boton boton-chico boton-rojo">Eliminar</button></form>
+        </td>
+    </tr>{% endfor %}</tbody>
+</table></div>
+{% else %}
+<div class="aviso aviso-info">
+    {% if summary.productos == 0 %}<p>Todavía no hay productos en la tienda.</p>
+        <form method="post" action="{{ url_for('dispatch', path='p9/ejemplo') }}"><button type="submit" class="boton boton-verde">Cargar catálogo de ejemplo</button></form>
+    {% else %}No se encontraron productos con esa búsqueda o categoría.{% endif %}
+</div>
+{% endif %}
+</div>

@@ -1,0 +1,14 @@
+{
+  "datosPersonales": {
+    "nombre": "Alexis Pascual Hernandez",
+    "ocupacion": "Programador en Automatización",
+    "iniciales": "APH"
+  },
+  "ubicacion": {
+    "etiqueta": "Pimpz · Av. Agricultura 258, Tultitlán, Edo. Mex.",
+    "direccion": "Av. Agricultura 258, Tultitlán, Estado de México",
+    "lat": 19.645,
+    "lng": -99.16944,
+    "zoom": 15
+  }
+}

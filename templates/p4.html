@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="perfil-practica">
+    <p class="identidad-etiqueta">Práctica 4</p>
+    <h1>Sitio personal y ubicación</h1>
+    <p>Ubicación principal: Av. Agricultura 258, Tultitlán, Estado de México.</p>
+</header>
+<section id="como-llegar">
+    <h2 class="h4">Etapa 1 · Cómo llegar desde la UPVM</h2>
+    <p>Trayecto desde la Universidad Politécnica del Valle de México hasta la ubicación principal de Pimpz.</p>
+    <figure class="marco mapa-estatico">
+        <img src="{{ url_for('static', filename='p4/como-llegar-pimpz.svg') }}" alt="Mapa estático esquemático desde la Universidad Politécnica del Valle de México hasta Av. Agricultura 258, Tultitlán">
+        <figcaption>Imagen fija del trayecto. Para indicaciones viales actualizadas, abre la ruta en Google Maps.</figcaption>
+    </figure>
+    <a class="boton boton-azul" href="https://www.google.com/maps/dir/?api=1&amp;origin=Universidad+Polit%C3%A9cnica+del+Valle+de+M%C3%A9xico%2C+Tultitl%C3%A1n&amp;destination=Av.+Agricultura+258%2C+Tultitl%C3%A1n%2C+Estado+de+M%C3%A9xico" target="_blank" rel="noopener noreferrer">Abrir indicaciones</a>
+</section>
+<section id="mapa-interactivo">
+    <h2 class="h4">Etapa 3 · Mapa interactivo</h2>
+    <p>Explora la ubicación principal de Pimpz en Tultitlán con Leaflet y OpenStreetMap.</p>
+    <div class="marco"><div id="mapa-leaflet"></div></div>
+</section>
+{% endblock %}

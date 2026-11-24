@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+{% if view == 'panel' %}
+<div id="panel-metricas" data-metricas="{{ url_for('dispatch', path='p8/metricas') }}">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2"><div>
+        <h1 class="h3 mb-1">Panel de métricas</h1><p class="text-muted small mb-0">Se actualiza cada 5 segundos. <span id="estado"></span></p>
+    </div><a class="boton boton-gris" href="{{ url_for('dispatch', path='p8') }}">Volver</a></div>
+    <section class="kpis" id="kpis"></section>
+    <h2 class="h5 mt-4">Actividad reciente</h2><div class="tabla-scroll"><table id="tabla-recientes" class="tabla"></table></div>
+    <h2 class="h5 mt-4">Páginas</h2><div class="tabla-scroll"><table id="tabla-paginas" class="tabla"></table></div>
+    <h2 class="h5 mt-4">¿Dónde hacen clic?</h2><div class="tabla-scroll"><table id="tabla-clics" class="tabla"></table></div>
+    <h2 class="h5 mt-4">Usuarios</h2><div class="tabla-scroll"><table id="tabla-usuarios" class="tabla"></table></div>
+    <h2 class="h5 mt-4">Por carrera</h2><div class="tabla-scroll"><table id="tabla-carreras" class="tabla"></table></div>
+    <p class="text-muted small mt-4 mb-0">Los datos se guardan localmente en SQLite.</p>
+</div>
+<script src="{{ url_for('static', filename='p8/panel.js') }}"></script>
+{% else %}
+<h1>Práctica 8 · Métricas del sitio</h1>
+<p class="pequena">Un panel de analítica hecho con Python, SQLite y JavaScript. Mide actividad en todas las prácticas.</p>
+<div class="rejilla-tarjetas">
+    <div class="tarjeta"><div class="encabezado">Panel en vivo</div><div class="cuerpo"><p>Consulta visitantes, sesiones, páginas vistas, clics y tiempo en el sitio.</p></div><div class="pie"><a class="boton" href="{{ url_for('dispatch', path='p8/panel') }}">Abrir panel</a></div></div>
+    <div class="tarjeta"><div class="encabezado">Cómo funciona</div><div class="cuerpo"><ol><li>El rastreador usa cookies con tu permiso.</li><li>Los eventos se envían a <code>/p8/eventos</code>.</li><li>El panel recibe métricas JSON.</li></ol></div><div class="pie"><a class="boton boton-gris" href="{{ url_for('dispatch', path='p9') }}">Ir a Pimpz</a></div></div>
+    <div class="tarjeta"><div class="encabezado">Privacidad</div><div class="cuerpo"><p>Si rechazas el aviso de cookies, no se registra actividad. No se guarda lo que escribes en formularios.</p></div><div class="pie"><a href="#" data-cambiar-privacidad>Cambiar mi preferencia</a></div></div>
+</div>
+{% endif %}
+{% endblock %}

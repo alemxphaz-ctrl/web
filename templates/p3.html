@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+{% if mode|default('list') == 'form' %}
+<div class="contenedor-ancho">
+    <div class="tarjeta">
+        <div class="encabezado">{{ 'Editar producto' if product else 'Agregar producto' }}</div>
+        <div class="cuerpo">
+            <form method="post">
+                <div class="campo"><label for="nombre">Nombre</label><input id="nombre" name="nombre" required value="{{ product.nombre if product else '' }}"></div>
+                <div class="campo"><label for="descripcion">Descripción</label><textarea id="descripcion" name="descripcion" rows="3" required>{{ product.descripcion if product else '' }}</textarea></div>
+                <div class="fila">
+                    <div class="campo"><label for="precio">Precio</label><input type="number" id="precio" name="precio" step="0.01" min="0" required value="{{ product.precio if product else '' }}"></div>
+                    <div class="campo"><label for="existencia">Existencia</label><input type="number" id="existencia" name="existencia" min="0" required value="{{ product.existencia if product else '' }}"></div>
+                </div>
+                <button class="boton" type="submit">Guardar</button>
+                <a class="boton boton-gris" href="{{ url_for('dispatch', path='p3') }}">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% else %}
+<h1>Práctica 3 · CRUD de productos</h1>
+<p><a class="boton boton-verde" href="{{ url_for('dispatch', path='p3/crear') }}">Agregar producto</a></p>
+{% if products %}
+<table class="tabla">
+    <thead><tr><th>Nombre</th><th>Descripción</th><th>Precio</th><th>Existencia</th><th>Acciones</th></tr></thead>
+    <tbody>{% for product in products %}
+    <tr>
+        <td>{{ product.nombre }}</td><td>{{ product.descripcion }}</td><td>${{ product.precio }}</td><td>{{ product.existencia }}</td>
+        <td class="acciones">
+            <a class="boton boton-chico" href="{{ url_for('dispatch', path='p3/editar/' ~ product.id) }}">Editar</a>
+            <form class="formulario-en-linea" method="post" action="{{ url_for('dispatch', path='p3/eliminar/' ~ product.id) }}"><button class="boton boton-chico boton-rojo" type="submit">Eliminar</button></form>
+        </td>
+    </tr>{% endfor %}</tbody>
+</table>
+{% else %}<div class="aviso aviso-info">Todavía no hay productos registrados.</div>{% endif %}
+{% endif %}
+{% endblock %}
